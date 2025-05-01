@@ -52,13 +52,11 @@ spec:
     persistence:
       config:
         enabled: true
-        type: emptyDir
-        sizeLimit: 10Gi
-
-        # volumeSpec:
-        #   nfs:
-        #     server: "${NFS_SERVER}"
-        #     path: "${NFS_KUBERNETES}/jellyfin/config"
+        type: custom
+        volumeSpec:
+          nfs:
+            server: "${NFS_SERVER}"
+            path: "${NFS_STORAGE}"
       transcode:
         enabled: true
         type: emptyDir
@@ -66,13 +64,11 @@ spec:
         sizeLimit: 10Gi
       videos:
         enabled: true
-        type: emptyDir
-        sizeLimit: 10Gi
-
-        # volumeSpec:
-        #   nfs:
-        #     server: "${NFS_SERVER}"
-        #     path: "${NFS_VIDEO}"
+        type: custom
+        volumeSpec:
+          nfs:
+            server: "${NFS_SERVER}"
+            path: "${NFS_VIDEOS}"
       music:
         enabled: true
         type: emptyDir
