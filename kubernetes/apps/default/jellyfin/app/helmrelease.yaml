@@ -104,7 +104,7 @@ spec:
           http:
             port: 8096
     ingress:
-      app:
+      main:
         className: external
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
@@ -113,7 +113,7 @@ spec:
             paths:
               - path: /
                 service:
-                  identifier: app
+                  identifier: main
                   port: http
     # ingress:
     #   main:
