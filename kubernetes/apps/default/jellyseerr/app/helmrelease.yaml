@@ -10,8 +10,9 @@ spec:
     kind: OCIRepository
     name: app-template
   install:
+    timeout: 10m0s
     remediation:
-      retries: -1
+      retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
@@ -42,7 +43,7 @@ spec:
                       periodSeconds: 10
                       timeoutSeconds: 1
                       failureThreshold: 3
-                  readiness: *probes
+                  readiness: *g
 
     persistence:
       config:
