@@ -22,7 +22,7 @@ spec:
   # See https://github.com/bjw-s/helm-charts/blob/main/charts/library/common/values.yaml
   values:
     controllers:
-          jellyseerr:
+          main:
             containers:
               app:
                 image:
