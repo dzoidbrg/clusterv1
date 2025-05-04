@@ -36,11 +36,11 @@ spec:
     persistence:
       config:
         enabled: true
-        type: emptyDir
-      config-logs:
-        type: emptyDir
-        globalMounts:
-          - path: /app/config/logs
+        type: custom
+        volumeSpec:
+          nfs:
+            server: "${NFS_SERVER}"
+            path: "${NFS_STORAGE}/jellyseerr"
       tmp:
         type: emptyDir
 
