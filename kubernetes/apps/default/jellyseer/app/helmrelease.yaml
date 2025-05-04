@@ -22,7 +22,6 @@ spec:
   values:
     controllers:
       jellyseer:
-        strategy: RollingUpdate
         containers:
           main:
             image:
@@ -33,19 +32,16 @@ spec:
               PORT: 8080
             resources:
               requests:
-                memory: 443M
+                #gpu.intel.com/i915: 1
+                cpu: 500m
+                memory: 1000Mi
               limits:
-                memory: 536M
+                #gpu.intel.com/i915: 1
+                memory: 8000Mi
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 65534
-        runAsGroup: 65534
-        seccompProfile: { type: RuntimeDefault }
     service:
       app:
         controller: jellyseer
