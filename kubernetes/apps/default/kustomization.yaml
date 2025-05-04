@@ -9,3 +9,5 @@ components:
 resources:
   - ./echo/ks.yaml
   - ./jellyfin/ks.yaml
+  - ./jellyseer/ks.yaml
+
