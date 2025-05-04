@@ -57,7 +57,7 @@ spec:
         controller: jellyseer
         ports:
           http:
-            port: *port
+            port: 8080
     serviceMonitor:
       app:
         serviceName: jellyseer
