@@ -43,7 +43,7 @@ spec:
                       periodSeconds: 10
                       timeoutSeconds: 1
                       failureThreshold: 3
-                  readiness: *g
+                  readiness: 3
 
     persistence:
       config:
