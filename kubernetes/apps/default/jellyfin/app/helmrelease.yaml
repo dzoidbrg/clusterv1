@@ -36,7 +36,11 @@ spec:
     persistence:
       config:
         enabled: true
-        type: emptyDir
+        type: custom
+        volumeSpec:
+          nfs:
+            server: "${NFS_SERVER}"
+            path: "${NFS_STORAGE}"
       transcode:
         enabled: true
         type: emptyDir
