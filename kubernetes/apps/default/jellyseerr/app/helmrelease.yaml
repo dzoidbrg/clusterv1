@@ -1,0 +1,113 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: jellyserr
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  dependsOn:
+    - name: cloudflared
+      namespace: network
+  # See https://github.com/bjw-s/helm-charts/blob/main/charts/library/common/values.yaml
+  values:
+    controllers:
+          jellyseerr:
+            containers:
+              app:
+                image:
+                  repository: fallenbagel/jellyseerr
+                  tag: 2.5.2
+                env:
+                  LOG_LEVEL: "info"
+                probes:
+                  liveness: &probes
+                    enabled: true
+                    custom: true
+                    spec:
+                      httpGet:
+                        path: /api/v1/status
+                        port: 5055
+                      initialDelaySeconds: 0
+                      periodSeconds: 10
+                      timeoutSeconds: 1
+                      failureThreshold: 3
+                  readiness: *probes
+                securityContext:
+                  allowPrivilegeEscalation: false
+                  readOnlyRootFilesystem: true
+                  capabilities: { drop: ["ALL"] }
+                resources:
+                  requests:
+                    cpu: 10m
+                    memory: 250Mi
+                  limits:
+                    memory: 1Gi
+
+    persistence:
+      config:
+        enabled: true
+        type: custom
+        volumeSpec:
+          nfs:
+            server: "${NFS_SERVER}"
+            path: "${NFS_STORAGE}/jellyseerr"
+      config-logs:
+        type: emptyDir
+        globalMounts:
+          - path: /app/config/logs
+      tmp:
+        type: emptyDir
+
+    service:
+      main:
+        controller: main
+        #type: LoadBalancer
+       # loadBalancerIP: ${CLUSTER_EXTERNAL_SUBNET_PREFIX}.${CLUSTER_LB_JELLYFIN}
+       # externalIPs:
+        #- ${CLUSTER_EXTERNAL_SUBNET_PREFIX}.${CLUSTER_LB_JELLYFIN}
+        #externalTrafficPolicy: Local
+        ports:
+          http:
+            port: 5055
+    ingress:
+      main:
+        className: external
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+        hosts:
+          - host: "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: main
+                  port: http
+    # ingress:
+    #   main:
+    #     enabled: true
+    #     annotations:
+    #       hajimari.io/enable: "true"
+    #       hajimari.io/icon: simple-icons:jellyfin
+    #       hajimari.io/info: Video and Music Player
+    #       hajimari.io/group: media
+    #       nginx.ingress.kubernetes.io/enable-global-auth: "false"
+    #     hosts:
+    #     - host: jellyfin.home.${CLUSTER_DOMAIN}
+    #       paths: &paths
+    #       - path: /
+    #         pathType: Prefix
+    #         service:
+    #           identifier: main
+    #           port: http
+    #     - host: jellyfin.pub.${CLUSTER_DOMAIN}
+    #       paths: *paths
