@@ -24,8 +24,6 @@ spec:
   values:
     controllers:
           main:
-            podSecurityContext:
-              fsGroup: 1000
             containers:
               app:
                 image:
