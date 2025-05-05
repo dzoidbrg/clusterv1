@@ -36,11 +36,9 @@ spec:
     persistence:
       config:
         enabled: true
-        type: custom
-        volumeSpec:
-          nfs:
-            server: "${NFS_SERVER}"
-            path: "${NFS_STORAGE}"
+        type: emptyDir
+        #medium: "Memory"
+        sizeLimit: 10Gi
       transcode:
         enabled: true
         type: emptyDir
