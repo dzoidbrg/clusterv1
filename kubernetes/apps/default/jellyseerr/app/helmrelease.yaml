@@ -31,9 +31,6 @@ spec:
                   tag: 2.5.2
                 env:
                   LOG_LEVEL: "info"
-                securityContext:
-                  runAsUser: 1000
-                  runAsGroup: 1000
 
 
     persistence:
