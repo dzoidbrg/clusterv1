@@ -38,7 +38,7 @@ spec:
         enabled: true
         type: custom
         globalMounts:
-          - /app/config
+          path: /app/config
         volumeSpec:
           nfs:
             server: "${NFS_SERVER}"
