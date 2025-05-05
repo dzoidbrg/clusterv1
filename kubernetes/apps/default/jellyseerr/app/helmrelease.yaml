@@ -42,7 +42,7 @@ spec:
         volumeSpec:
           nfs:
             server: "${NFS_SERVER}"
-            path: "${NFS_STORAGE}/jellyseerr"
+            path: "/mnt/pool/k8sstorage/jellyseerr"
       tmp:
         type: emptyDir
 
