@@ -3,15 +3,16 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: jellyfin
+  name: jackett
 spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
     name: app-template
   install:
+    timeout: 10m0s
     remediation:
-      retries: -1
+      retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
@@ -22,55 +23,25 @@ spec:
   # See https://github.com/bjw-s/helm-charts/blob/main/charts/library/common/values.yaml
   values:
     controllers:
-      main:
+          main:
         containers:
-          app:
+          app :
             image:
-              repository: docker.io/jellyfin/jellyfin
-              tag: 10.10.7
-            env:
-              TZ: "Europe/Berlin"
-              JELLYFIN_CACHE_DIR: "/config/cache"
-
+              repository: linuxserver/jackett
+              tag: "0.22.1027"
 
     persistence:
       config:
         enabled: true
         type: custom
+        globalMounts:
+          - path: /config
         volumeSpec:
           nfs:
             server: "${NFS_SERVER}"
-            path: "${NFS_STORAGE }"
-      transcode:
-        enabled: true
+            path: "/mnt/pool/k8sstorage/jackett"
+      tmp:
         type: emptyDir
-        #medium: "Memory"
-        sizeLimit: 10Gi
-      videos:
-        enabled: true
-        type: custom
-        volumeSpec:
-          nfs:
-            server: "${NFS_SERVER}"
-            path: "${NFS_VIDEOS}"
-      music:
-        enabled: true
-        type: emptyDir
-        sizeLimit: 10Gi
-
-        # volumeSpec:
-        #   nfs:
-        #     server: "${NFS_SERVER}"
-        #     path: "${NFS_MUSIC}"
-      downloads:
-        enabled: true
-        type: emptyDir
-        sizeLimit: 10Gi
-
-        # volumeSpec:
-        #   nfs:
-        #     server: "${NFS_SERVER}"
-        #     path: "${NFS_DOWNLOADS}"
 
     service:
       main:
@@ -82,7 +53,7 @@ spec:
         #externalTrafficPolicy: Local
         ports:
           http:
-            port: 8096
+            port: 9117
     ingress:
       main:
         className: external
