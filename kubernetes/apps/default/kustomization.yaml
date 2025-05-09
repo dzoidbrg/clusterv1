@@ -9,6 +9,5 @@ components:
 resources:
   - ./echo/ks.yaml
   - ./jellyfin/ks.yaml
-  - ./qbittorrent/ks.yaml
   - ./jackett/ks.yaml
   - ./jellyseerr/ks.yaml
